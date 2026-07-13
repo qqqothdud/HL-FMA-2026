@@ -5,3 +5,4 @@
 ## 예정 파일
 - fsm.py
 - mission.py
+- state.py
