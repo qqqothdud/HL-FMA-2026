@@ -8,8 +8,6 @@ from simulator.simulator_interface import send_command
 
 config = load_config()
 
-sensor_data = get_sensor_data()
-
 waypoint = {
     "x": 20,
     "y": 10
@@ -17,27 +15,22 @@ waypoint = {
 
 for i in range(10):
 
-    distance = calculate_distance(
-    sensor_data,
-    waypoint
-    )    
+    # 매 반복마다 센서 읽기
+    sensor_data = get_sensor_data()
+
+    distance = calculate_distance(sensor_data, waypoint)
 
     print(distance)
 
     mission = mission_planning(sensor_data)
-    steer, throttle, brake = control(sensor_data, mission, config)
 
-    command = {
-    "steer": steer,
-    "throttle": throttle,
-    "brake": brake
-    }
+    command = control(sensor_data, mission, config)
 
     save_log(
-    i,
-    sensor_data,
-    steer,
-    mission
+        i,
+        sensor_data,
+        command,
+        mission
     )
 
     print("=" * 40)
@@ -56,5 +49,3 @@ for i in range(10):
     send_command(command)
 
     print("=" * 40)
-
-    print(config)
