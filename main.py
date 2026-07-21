@@ -3,17 +3,12 @@ from controller.controller import control
 from logger.logger import save_log
 from config.config_loader import load_config
 from planning.geometry import calculate_distance
+from simulator.simulator_interface import get_sensor_data
+from simulator.simulator_interface import send_command
 
 config = load_config()
 
-sensor_data = {
-    "x": 12.3,
-    "y": 4.8,
-    "yaw": 1.57,
-    "speed": 8.5,
-    "camera": None,
-    "obstacles": []
-}
+sensor_data = get_sensor_data()
 
 waypoint = {
     "x": 20,
@@ -21,10 +16,6 @@ waypoint = {
 }
 
 for i in range(10):
-
-    sensor_data["x"] += 0.5
-    sensor_data["y"] += 0.2
-    sensor_data["speed"] += 0.1
 
     distance = calculate_distance(
     sensor_data,
@@ -62,7 +53,7 @@ for i in range(10):
     print(mission)
 
     print("[Command]")
-    print(command)
+    send_command(command)
 
     print("=" * 40)
 

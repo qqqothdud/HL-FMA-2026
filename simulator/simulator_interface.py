@@ -26,8 +26,9 @@ def get_sensor_data():
 
 def send_command(command):
 
-    print()
+    print("\n===== Vehicle Command =====")
 
-    print("===== Vehicle Command =====")
-
-    print(command)
+    print(f"Steer        : {command['steer']:.3f}")
+    print(f"Accel        : {command['accel']:.3f}")
+    print(f"Brake        : {command['brake']:.3f}")
+    print(f"Target Speed : {command['target_speed']:.1f}")
