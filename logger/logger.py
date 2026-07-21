@@ -37,3 +37,6 @@ def save_log(
             steer,
             mission
         ])
+
+
+    print(f"[Loop {loop + 1}] 로그 저장 완료!")
