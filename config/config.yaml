@@ -1,0 +1,9 @@
+vehicle:
+
+  target_speed: 10.0
+
+  max_steer: 0.5
+
+controller:
+
+  lookahead: 3.0
