@@ -39,4 +39,4 @@ def save_log(
         ])
 
 
-    print(f"[Loop {loop + 1}] 로그 저장 완료!")
+    print(f"[Loop {time + 1}] 로그 저장 완료!")

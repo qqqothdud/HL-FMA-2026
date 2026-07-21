@@ -37,7 +37,10 @@ for i in range(10):
     print(f"Loop : {i+1}")
 
     print("[Sensor]")
-    print(sensor_data)
+    print(f"x      : {sensor_data['x']:.2f}")
+    print(f"y      : {sensor_data['y']:.2f}")
+    print(f"yaw    : {sensor_data['yaw']:.2f}")
+    print(f"speed  : {sensor_data['speed']:.2f}")
 
     print("[Mission]")
     print(mission)
