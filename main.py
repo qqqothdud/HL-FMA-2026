@@ -1,8 +1,10 @@
+import time
 from mission.mission import mission_planning
 from controller.controller import control
 from logger.logger import save_log
 from config.config_loader import load_config
 from planning.geometry import calculate_distance
+from planning.mission_manager import MissionManager
 
 config = load_config()
 
@@ -67,3 +69,24 @@ for i in range(10):
     print("=" * 40)
 
     print(config)
+
+def main():
+    print("=== 자율주행 파이프라인 시작 ===")
+    
+    # [추가] 객체 초기화 (반복문 밖)
+    mission_manager = MissionManager()
+    
+    # 메인 루프 
+    for i in range(1, 101):
+        # 1. 센서 더미 데이터 (예시)
+        sensor_data = {'x': 0.0, 'stop_line_detected': (i >= 50)}
+        
+        # 2. [추가] 미션 판단 연결
+        current_state, target_speed = mission_manager.update_state(sensor_data)
+        
+        # 확인용 출력
+        print(f"[Loop {i:03d}] 미션 상태: {current_state.value:<16} | 목표 속도: {target_speed}")
+        time.sleep(0.1)
+
+if __name__ == "__main__":
+    main()
