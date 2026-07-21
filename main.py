@@ -1,3 +1,5 @@
+from mission.mission import mission_planning
+from controller.controller import control
 from logger.logger import save_log
 
 sensor_data = {
@@ -8,6 +10,14 @@ sensor_data = {
     "camera": None,
     "obstacles": []
 }
+
+mission = mission_planning(sensor_data)
+print(mission)
+
+steer, throttle, brake = control(sensor_data, mission)
+print(steer)
+print(throttle)
+print(brake)
 
 for i in range(10):
 
