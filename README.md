@@ -1,50 +1,56 @@
-# HL-FMA-2026
+#  Simulator Module
 
-## Project Overview
+## 목적
 
-VTD(Virtual Test Drive) 기반 자율주행 경진대회를 위한 자율주행 Controller 개발 프로젝트
+Simulator 모듈은 차량과 시뮬레이터(VTD) 사이의 입출력을 담당
 
----
-
-## Objectives
-
-- 차선 추종
-- 장애물 회피
-- 미션 수행
-- VTD 연동
-- 주행 로그 분석
+현재는 Dummy Sensor Data를 사용하며,
+향후 VTD API와 연결될 예정
 
 ---
 
-## Project Structure
+## 입력 데이터
 
-```
-config/
-controller/
-perception/
-planning/
-simulator/
-logger/
-data/
-docs/
-test/
+현재 Sensor Data 형식
+
+```python
+sensor_data = {
+    "x": 12.3,
+    "y": 4.8,
+    "yaw": 1.57,
+    "speed": 8.5,
+    "camera": None,
+    "obstacles": []
+}
 ```
 
 ---
 
-## Development Environment
+## 출력 데이터
 
-- Ubuntu (WSL)
-- Python
-- Git / GitHub
-- VS Code
+Controller에서 생성된 Command
+
+```python
+command = {
+    "steer": 0.15,
+    "throttle": 0.4,
+    "brake": 0.0
+}
+```
 
 ---
 
-## Team Roles
+## 현재 구현 상태
 
-| Member | Role |
-|-------|-------|
-| 배소영 | Simulator / Integration |
-| 주연아 | Control |
-| 서승휘 | Perception / Mission |
+- Dummy Sensor Data 생성
+- Main Loop 연동
+- Logger 연동
+
+---
+
+## 향후 구현 예정
+
+- VTD Sensor API 연결
+- Camera Image 수신
+- Obstacle 정보 수신
+- Vehicle State 수신
