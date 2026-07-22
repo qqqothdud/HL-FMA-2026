@@ -4,15 +4,7 @@ from controller.controller import control
 from logger.logger import save_log
 from config.config_loader import load_config
 from planning.geometry import calculate_distance
-from planning.mission_manager import MissionManager
-from enum import Enum
-
-class MissionState(Enum):
-    START = "START"
-    LANE_FOLLOW = "LANE_FOLLOW"
-    STOP_DETECTED = "STOP_DETECTED"
-    OBSTACLE_AVOID = "OBSTACLE_AVOID"
-    FINISH = "FINISH"
+from planning.mission_manager import MissionManager, MissionState
 
 def main():
     print("=== 자율주행 파이프라인 시작 ===")
@@ -34,20 +26,26 @@ def main():
         "y": 10
     }
 
-    # 메인 루프 실행 (기존 밖에서 돌던 코드와 아래 있던 코드를 통합)
     for i in range(1, 101):
-        # 1. 센서 더미 데이터 업데이트
+        # 더미 데이터 업데이트
         sensor_data["x"] += 0.5
         sensor_data["y"] += 0.2
-        sensor_data["speed"] += 0.1
+        
+        # 50루프 이후 정지선 검출 플래그 활성화
         sensor_data["stop_line_detected"] = (i >= 50)
-        
+
         distance = calculate_distance(sensor_data, waypoint)
-        
-        # 2. 미션 상태 판단 연결 (반환되는 current_state가 바로 Enum 객체임)
+
+        # 미션 상태 판단
         current_state, target_speed = mission_manager.update_state(sensor_data)
         
-        # 3. 제어 명령 계산
+        # 간이 물리 엔진: 목표 속도에 맞게 현재 속도 가감속
+        if sensor_data["speed"] < target_speed:
+            sensor_data["speed"] += 0.5
+        elif sensor_data["speed"] > target_speed:
+            sensor_data["speed"] -= 1.5 # 브레이크 시 급감속
+        sensor_data["speed"] = max(0.0, sensor_data["speed"]) # 속도 음수 방지
+
         steer, throttle, brake = control(sensor_data, current_state, config)
         
         command = {
@@ -56,32 +54,16 @@ def main():
             "brake": brake
         }
         
-        # 4. [핵심] mission_state를 로그에 저장하도록 save_log 호출
-        save_log(
-            i,
-            sensor_data,
-            steer,
-            current_state  # 현재 Enum 상태값을 바로 던져줌
-        )
+        # 로그 저장
+        save_log(i, sensor_data, steer, current_state)
         
-        # 확인용 출력
-        print("=" * 40)
-        print(f"Loop : {i}")
-        print(f"목표 Waypoint까지 남은 거리: {distance:.2f}")
+        # 확인용 출력 (출력 포맷 여백 조정)
+        print("=" * 45)
+        print(f"Loop : {i} | 남은 거리: {distance:.2f}")
+        print(f"[Sensor] speed: {sensor_data['speed']:.2f}")
+        print(f"[Mission] 상태: {current_state.value:<18} | 목표 속도: {target_speed}")
         
-        print("[Sensor]")
-        print(f"x      : {sensor_data['x']:.2f}")
-        print(f"y      : {sensor_data['y']:.2f}")
-        print(f"yaw    : {sensor_data['yaw']:.2f}")
-        print(f"speed  : {sensor_data['speed']:.2f}")
-        
-        print("[Mission]")
-        print(f"상태: {current_state.value:<16} | 목표 속도: {target_speed}")
-        
-        print("[Command]")
-        print(command)
-        
-        time.sleep(0.1)
+        time.sleep(0.05)
 
 if __name__ == "__main__":
     main()
