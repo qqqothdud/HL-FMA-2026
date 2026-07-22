@@ -1,11 +1,19 @@
-# config/config.yaml
+# ---------------------------------
+# 팀원(배소영) 작성 파트 복구: 차량 제어 파라미터
+# ---------------------------------
+vehicle:
+  target_speed: 20.0
+  max_steer: 30.0
+  lookahead: 5.0
+
+# ---------------------------------
+# 이건 작성 파트: FSM 판단 파라미터
+# ---------------------------------
 mission:
-  # 상태 전환 기준 임계값 (단위: m)
   thresholds:
     stop_distance: 1.0
     approach_distance: 5.0
   
-  # 상태별 목표 속도 (단위: m/s 또는 km/h)
   speeds:
     lane_following: 20.0
     approaching_stop: 10.0
@@ -13,8 +21,10 @@ mission:
     obstacle_avoiding: 10.0
     stopped: 0.0
 
+# ---------------------------------
+# 이건 작성 파트: 인지 파라미터
+# ---------------------------------
 perception:
-  # 차선 인식 HSV 범위 (7/9 실습 반영)
   hsv:
     yellow_lower: [20, 100, 100]
     yellow_upper: [40, 255, 255]

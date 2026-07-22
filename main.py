@@ -38,8 +38,8 @@ def main():
             print("="*55 + "\n")
             previous_state = current_state 
 
-        # 3. 제어 명령 계산 (주연아 님의 컨트롤러)
-        steer, throttle, brake = control(sensor_data, current_state, config)
+        # 3. 제어 명령 계산 (팀원이 추가한 여분의 반환값이 있다면 *extra_args가 흡수함)
+        steer, throttle, brake, *extra_args = control(sensor_data, current_state, config)
         
         # 4. [리팩토링] 계산된 명령을 시뮬레이터로 전송하는 인터페이스 연결
         command = {"steer": steer, "throttle": throttle, "brake": brake}
