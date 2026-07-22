@@ -16,3 +16,4 @@ Thumbs.db
 #csv
 .csv/
 csv/
+*.csv
