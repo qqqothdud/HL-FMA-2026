@@ -3,6 +3,7 @@ current_y = 4.8
 current_yaw = 1.57
 current_speed = 8.5
 
+
 def get_sensor_data():
 
     global current_x
@@ -10,15 +11,24 @@ def get_sensor_data():
     global current_yaw
     global current_speed
 
+    # 차량이 조금씩 앞으로 이동
     current_x += 0.5
     current_y += 0.2
 
     sensor_data = {
 
+        # GPS
         "x": current_x,
         "y": current_y,
+
+        # 차량 방향
         "yaw": current_yaw,
-        "speed": current_speed
+
+        # 차량 속도
+        "speed": current_speed,
+
+        # Front Camera
+        "camera": "camera/road.jpg"
 
     }
 
