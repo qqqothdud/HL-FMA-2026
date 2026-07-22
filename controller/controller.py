@@ -1,12 +1,18 @@
 def control(sensor_data, mission, config):
 
     target_speed = config["vehicle"]["target_speed"]
-    max_steer = config["vehicle"]["max_steer"]
 
     steer = 0.15
-
-    throttle = target_speed / 25
-
+    accel = 0.4
     brake = 0.0
 
-    return steer, throttle, brake
+    command = {
+
+        "steer": steer,
+        "target_speed": target_speed,
+        "accel": accel,
+        "brake": brake
+
+    }
+
+    return command
