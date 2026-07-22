@@ -3,9 +3,10 @@ from controller.controller import control
 from logger.logger import save_log
 from config.config_loader import load_config
 from planning.geometry import calculate_distance
-from simulator.simulator_interface import get_sensor_data
-from simulator.simulator_interface import send_command
-
+from simulator.simulator_interface import (
+    get_sensor_data,
+    send_command
+)
 config = load_config()
 
 waypoint = {
@@ -13,18 +14,22 @@ waypoint = {
     "y": 10
 }
 
-for i in range(10):
+for i in range(100):
 
     # 매 반복마다 센서 읽기
     sensor_data = get_sensor_data()
 
     distance = calculate_distance(sensor_data, waypoint)
 
-    print(distance)
+    print("[Waypoint]")
+    print(f"x : {waypoint['x']}")
+    print(f"y : {waypoint['y']}")
+    print(f"distance : {distance:.2f} m")
 
     mission = mission_planning(sensor_data)
 
     command = control(sensor_data, mission, config)
+    send_command(command)
 
     save_log(
         i,
@@ -33,8 +38,8 @@ for i in range(10):
         mission
     )
 
-    print("=" * 40)
-    print(f"Loop : {i+1}")
+    print("\n" + "=" * 40)
+    print(f"Loop : {i+1}/100")
 
     print("[Sensor]")
     print(f"x      : {sensor_data['x']:.2f}")
@@ -46,6 +51,6 @@ for i in range(10):
     print(mission)
 
     print("[Command]")
-    send_command(command)
+    
 
-    print("=" * 40)
+    print("\n" + "=" * 40)
