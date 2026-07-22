@@ -47,4 +47,4 @@ test/
 |-------|-------|
 | 배소영 | Simulator / Integration |
 | 주연아 | Control |
-| 서승휘 | Perception / Mission |
+|  이건  | Perception / Mission |
