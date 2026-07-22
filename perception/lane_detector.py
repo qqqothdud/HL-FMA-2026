@@ -5,11 +5,11 @@ import glob
 
 class LaneDetector:
     def __init__(self):
-        # 노란색 차선 (Yellow) HSV 범위
+        # 노란색 차선 (Yellow) HSV 범위 (실제 VTD 시뮬레이터의 카메라에서 받는 데이터로 HSV값 수정 필요)
         self.lower_yellow = np.array([20, 100, 100])
         self.upper_yellow = np.array([40, 255, 255])
         
-        # 흰색 차선 (White) HSV 범위
+        # 흰색 차선 (White) HSV 범위 (실제 VTD 시뮬레이터의 카메라에서 받는 데이터로 HSV값 수정 필요)
         self.lower_white = np.array([0, 0, 200])
         self.upper_white = np.array([180, 50, 255])
 
