@@ -1,9 +1,22 @@
-vehicle:
+# config/config.yaml
+mission:
+  # 상태 전환 기준 임계값 (단위: m)
+  thresholds:
+    stop_distance: 1.0
+    approach_distance: 5.0
+  
+  # 상태별 목표 속도 (단위: m/s 또는 km/h)
+  speeds:
+    lane_following: 20.0
+    approaching_stop: 10.0
+    lane_returning: 15.0
+    obstacle_avoiding: 10.0
+    stopped: 0.0
 
-  target_speed: 10.0
-
-  max_steer: 0.5
-
-controller:
-
-  lookahead: 3.0
+perception:
+  # 차선 인식 HSV 범위 (7/9 실습 반영)
+  hsv:
+    yellow_lower: [20, 100, 100]
+    yellow_upper: [40, 255, 255]
+    white_lower: [0, 0, 200]
+    white_upper: [180, 50, 255]

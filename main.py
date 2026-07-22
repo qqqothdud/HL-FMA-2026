@@ -1,71 +1,54 @@
 import time
-from mission.mission import mission_planning
 from controller.controller import control
 from logger.logger import save_log
 from config.config_loader import load_config
 from planning.geometry import calculate_distance
 from planning.mission_manager import MissionManager, MissionState
 
-def main():
-    print("=== 자율주행 파이프라인 시작 ===")
-    
-    config = load_config()
-    mission_manager = MissionManager()
-    
-    # 초기 시작 위치
-    sensor_data = {
-        "x": 0.0,
-        "y": 0.0,
-        "yaw": 1.57,
-        "speed": 8.5,
-        "camera": None,
-        "obstacles": []
-    }
-    
-    # 테스트를 위해 50루프째에 도달할 수 있는 정확한 좌표로 Waypoint 설정
-    waypoint = {
-        "x": 25.0,
-        "y": 10.0
-    }
+# [리팩토링] 팀원이 작성한 시뮬레이터 인터페이스 임포트
+# (현재 파일 내용은 더미여도, 구조적 결합을 위해 여기서 불러와야 합니다)
+from simulator.simulator_interface import get_sensor_data, send_command
 
+def main():
+    print("=== 자율주행 파이프라인 (Refactored) 시작 ===")
+    
+    # 설정 파일 로드 및 매니저 초기화
+    config = load_config()
+    mission_manager = MissionManager(config) 
+    
+    waypoint = {"x": 25.0, "y": 10.0}
     previous_state = MissionState.LANE_FOLLOWING
 
     for i in range(1, 101):
-        # 차량이 Waypoint를 향해 이동 (매 루프마다 x는 +0.5, y는 +0.2)
-        sensor_data["x"] += 0.5
-        sensor_data["y"] += 0.2
+        # 1. [리팩토링] 더미 데이터 계산 로직을 삭제하고 인터페이스 함수로 교체
+        # 배소영 님이 작성한 모듈에서 VTD 센서 데이터를 받아오는 형태로 통일
+        sensor_data = get_sensor_data() 
         
-        # 1. 거리 계산
-        distance = calculate_distance(sensor_data, waypoint)
-        
-        # 2. [핵심] FSM이 거리를 알 수 있도록 sensor_data에 값을 주입
-        sensor_data["distance_to_waypoint"] = distance
+        # 1-1. 인터페이스에서 아직 구현되지 않은 임시값 덮어쓰기 (테스트 유지용)
+        sensor_data["distance_to_waypoint"] = calculate_distance(sensor_data, waypoint)
+        sensor_data["stop_line_detected"] = (i >= 50)
 
-        # 3. 미션 상태 판단 (이제 i >= 50 플래그가 아닌 실제 거리를 기반으로 판단됨)
-        new_state, target_speed = mission_manager.update_state(sensor_data)
+        # 2. 미션 상태 판단
+        current_state, target_speed = mission_manager.update_state(sensor_data)
         
-        # 상태 전환 감지 및 터미널 알림
-        if previous_state != new_state:
+        # 상태 전환 감지
+        if previous_state != current_state:
             print("\n" + "="*55)
-            print(f"[🚨 FSM 상태 전환 감지 🚨] {previous_state.value} ---> {new_state.value}")
+            print(f"[🚨 FSM 상태 전환 🚨] {previous_state.value} ---> {current_state.value}")
             print("="*55 + "\n")
-            previous_state = new_state 
-        
-        # 간이 물리 엔진
-        if sensor_data["speed"] < target_speed:
-            sensor_data["speed"] += 0.5
-        elif sensor_data["speed"] > target_speed:
-            sensor_data["speed"] -= 1.5 
-        sensor_data["speed"] = max(0.0, sensor_data["speed"]) 
+            previous_state = current_state 
 
-        steer, throttle, brake = control(sensor_data, new_state, config)
+        # 3. 제어 명령 계산 (주연아 님의 컨트롤러)
+        steer, throttle, brake = control(sensor_data, current_state, config)
         
-        # CSV 로깅
-        save_log(i, sensor_data, steer, new_state)
+        # 4. [리팩토링] 계산된 명령을 시뮬레이터로 전송하는 인터페이스 연결
+        command = {"steer": steer, "throttle": throttle, "brake": brake}
+        send_command(command)
         
-        # 실시간 모니터링 출력
-        print(f"Loop: {i:03d} | 위치: ({sensor_data['x']:04.1f}, {sensor_data['y']:04.1f}) | 거리: {distance:05.2f}m | 상태: {new_state.value:<16} | 속도: {sensor_data['speed']:05.2f}")
+        # 5. 로깅
+        save_log(i, sensor_data, steer, current_state)
         
+        print(f"Loop: {i:03d} | 상태: {current_state.value:<18} | 속도: {sensor_data.get('speed', 0.0):05.2f}")
         time.sleep(0.05)
 
 if __name__ == "__main__":
