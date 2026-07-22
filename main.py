@@ -12,42 +12,43 @@ def main():
     config = load_config()
     mission_manager = MissionManager()
     
+    # 초기 시작 위치
     sensor_data = {
-        "x": 12.3,
-        "y": 4.8,
+        "x": 0.0,
+        "y": 0.0,
         "yaw": 1.57,
         "speed": 8.5,
         "camera": None,
         "obstacles": []
     }
     
+    # 테스트를 위해 50루프째에 도달할 수 있는 정확한 좌표로 Waypoint 설정
     waypoint = {
-        "x": 20,
-        "y": 10
+        "x": 25.0,
+        "y": 10.0
     }
 
-    # [추가 1] 이전 상태를 기억할 변수 초기화 (루프 밖에서 선언)
     previous_state = MissionState.LANE_FOLLOWING
 
     for i in range(1, 101):
-        # 더미 데이터 업데이트
+        # 차량이 Waypoint를 향해 이동 (매 루프마다 x는 +0.5, y는 +0.2)
         sensor_data["x"] += 0.5
         sensor_data["y"] += 0.2
-        sensor_data["stop_line_detected"] = (i >= 50)
-
+        
+        # 1. 거리 계산
         distance = calculate_distance(sensor_data, waypoint)
+        
+        # 2. [핵심] FSM이 거리를 알 수 있도록 sensor_data에 값을 주입
+        sensor_data["distance_to_waypoint"] = distance
 
-        # 미션 상태 판단 (변수명을 current_state 대신 new_state로 변경하여 명확히 비교)
+        # 3. 미션 상태 판단 (이제 i >= 50 플래그가 아닌 실제 거리를 기반으로 판단됨)
         new_state, target_speed = mission_manager.update_state(sensor_data)
         
-        # ---------------------------------------------------------
-        # [핵심 로직] 상태 전환 감지 및 터미널 알림 출력
-        # ---------------------------------------------------------
+        # 상태 전환 감지 및 터미널 알림
         if previous_state != new_state:
             print("\n" + "="*55)
             print(f"[🚨 FSM 상태 전환 감지 🚨] {previous_state.value} ---> {new_state.value}")
             print("="*55 + "\n")
-            # 알림을 띄운 후, 다음 루프 비교를 위해 이전 상태를 현재 상태로 덮어씌움
             previous_state = new_state 
         
         # 간이 물리 엔진
@@ -59,17 +60,11 @@ def main():
 
         steer, throttle, brake = control(sensor_data, new_state, config)
         
-        command = {
-            "steer": steer,
-            "throttle": throttle,
-            "brake": brake
-        }
-        
-        # CSV 파일 저장은 기존과 동일하게 매 틱마다 지속적으로 기록됨
+        # CSV 로깅
         save_log(i, sensor_data, steer, new_state)
         
-        # 실시간 모니터링을 위해 기본 출력문은 1줄로 간소화
-        print(f"Loop: {i:03d} | 상태: {new_state.value:<18} | 속도: {sensor_data['speed']:05.2f} | 남은 거리: {distance:.2f}")
+        # 실시간 모니터링 출력
+        print(f"Loop: {i:03d} | 위치: ({sensor_data['x']:04.1f}, {sensor_data['y']:04.1f}) | 거리: {distance:05.2f}m | 상태: {new_state.value:<16} | 속도: {sensor_data['speed']:05.2f}")
         
         time.sleep(0.05)
 
