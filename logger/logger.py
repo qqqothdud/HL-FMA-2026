@@ -1,12 +1,11 @@
 import csv
 import os
 
-
 def save_log(
     time,
     sensor_data,
     command,
-    mission,
+    mission_state,
     stop_line_detected
 ):
 
@@ -27,7 +26,7 @@ def save_log(
                 "accel",
                 "brake",
                 "target_speed",
-                "mission",
+                "mission_state",
                 "stop_line_detected"
             ])
 
@@ -41,7 +40,7 @@ def save_log(
             command["accel"],
             command["brake"],
             command["target_speed"],
-            mission,
+            mission_state,
             stop_line_detected
         ])
 

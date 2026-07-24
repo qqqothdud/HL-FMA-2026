@@ -14,6 +14,8 @@ waypoint = {
     "y": 10
 }
 
+mission_state = "DRIVE"
+
 for i in range(100):
 
     # 센서 데이터 읽기
@@ -30,10 +32,18 @@ for i in range(100):
     stop_line_detected = False
 
     # 현재 미션 결정
-    mission = mission_planning(sensor_data, stop_line_detected)
+    mission_state = mission_planning(
+        sensor_data,
+        stop_line_detected,
+        mission_state
+    )
 
     # 제어 명령 생성
-    command = control(sensor_data, mission, config)
+    command = control(
+        sensor_data,
+        mission_state,
+        config
+    )
 
     # 차량 제어 명령 전송
     send_command(command)
