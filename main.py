@@ -5,8 +5,11 @@ from config.config_loader import load_config
 from planning.geometry import calculate_distance
 from simulator.simulator_interface import (
     get_sensor_data,
-    send_command
-)
+    send_command)
+from perception.lane_detector import (
+    detect_lane,
+    detect_stop_line)
+
 config = load_config()
 
 waypoint = {
