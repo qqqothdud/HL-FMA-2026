@@ -29,6 +29,7 @@ for i in range(100):
 
     # 정지선 호출
     binary_image = ...
+    lane_center = detect_lane(binary_image)
     stop_line_detected = False
 
     # 현재 미션 결정
@@ -42,6 +43,7 @@ for i in range(100):
     command = control(
         sensor_data,
         mission_state,
+        lane_center,
         config
     )
 

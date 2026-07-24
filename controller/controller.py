@@ -1,8 +1,11 @@
-def control(sensor_data, mission_state, config):
+def control(sensor_data, mission_state, lane_center, config):
 
     target_speed = config["vehicle"]["target_speed"]
 
-    steer = 0.15
+    image_center = 320
+    error = lane_center - image_center
+    steer = error * 0.002
+
     accel = 0.4
     brake = 0.0
 
