@@ -1,9 +1,7 @@
 vehicle:
+  target_speed: 12.0      # 직선 최고 목표 속도
+  min_speed: 5.0          # 코너에서 유지할 최소 속도
+  corner_gain: 20.0       # 조향각에 따른 감속 정도
 
-  target_speed: 10.0
-
-  max_steer: 0.5
-
-controller:
-
-  lookahead: 3.0
+control:
+  kp: 0.002
