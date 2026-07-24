@@ -2,10 +2,11 @@ import csv
 import os
 
 def save_log(
-    time,
+    frame,
     sensor_data,
     command,
     mission_state,
+    lane_center,
     stop_line_detected
 ):
 
