@@ -9,6 +9,7 @@ from simulator.simulator_interface import (
 from perception.lane_detector import (
     detect_lane,
     detect_stop_line)
+from logger.image_logger import save_failure_image
 
 config = load_config()
 
@@ -34,7 +35,15 @@ for i in range(100):
     binary_image = None
 
     lane_center = detect_lane(binary_image)
+
+    if lane_center is None:
+        save_failure_image(image, "lane_failure", i)
+
     stop_line_detected = detect_stop_line(binary_image)
+
+    # TODO
+    # False Positive / False Negative 발생 시
+    # save_failure_image(image, "stopline_failure", i)
 
     # 현재 미션 결정
     mission_state = mission_planning(
