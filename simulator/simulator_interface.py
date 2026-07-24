@@ -17,18 +17,31 @@ def get_sensor_data():
 
     sensor_data = {
 
-        # GPS
+        # Ego Vehicle
         "x": current_x,
         "y": current_y,
-
-        # 차량 방향
         "yaw": current_yaw,
-
-        # 차량 속도
         "speed": current_speed,
 
         # Front Camera
-        "camera": "camera/road.jpg"
+        "camera": {
+        "front": "camera/road.jpg",
+        "width": 1280,
+        "height": 720,
+        "fps": 30
+        },
+
+        # Localization
+        "gps": None,
+        "imu": None,
+
+        # Environment
+        "obstacles": [],
+        "traffic_light": None,
+        "collision": False,
+
+        # Route
+        "waypoint": None
 
     }
 
