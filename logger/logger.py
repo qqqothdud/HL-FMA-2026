@@ -18,7 +18,7 @@ def save_log(
 
         if not file_exists:
             writer.writerow([
-                "time",
+                "frame",
                 "x",
                 "y",
                 "yaw",
@@ -28,11 +28,12 @@ def save_log(
                 "brake",
                 "target_speed",
                 "mission_state",
+                "lane_center",
                 "stop_line_detected"
             ])
 
         writer.writerow([
-            time,
+            frame,
             sensor_data["x"],
             sensor_data["y"],
             sensor_data["yaw"],
@@ -42,7 +43,8 @@ def save_log(
             command["brake"],
             command["target_speed"],
             mission_state,
+            lane_center,
             stop_line_detected
         ])
 
-    print(f"[Loop {time + 1}] 로그 저장 완료!")
+    print(f"[Loop {frame + 1}] 로그 저장 완료!")
