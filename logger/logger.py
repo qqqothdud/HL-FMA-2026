@@ -5,8 +5,9 @@ import os
 def save_log(
     time,
     sensor_data,
-    steer,
-    mission
+    command,
+    mission,
+    stop_line_detected
 ):
 
     file_exists = os.path.exists("log.csv")
@@ -15,7 +16,6 @@ def save_log(
 
         writer = csv.writer(file)
 
-        # 파일이 처음 생성될 때만 헤더 작성
         if not file_exists:
             writer.writerow([
                 "time",
@@ -24,19 +24,25 @@ def save_log(
                 "yaw",
                 "speed",
                 "steer",
-                "mission"
+                "accel",
+                "brake",
+                "target_speed",
+                "mission",
+                "stop_line_detected"
             ])
 
-        # 실제 데이터 저장
         writer.writerow([
             time,
             sensor_data["x"],
             sensor_data["y"],
             sensor_data["yaw"],
             sensor_data["speed"],
-            steer,
-            mission
+            command["steer"],
+            command["accel"],
+            command["brake"],
+            command["target_speed"],
+            mission,
+            stop_line_detected
         ])
-
 
     print(f"[Loop {time + 1}] 로그 저장 완료!")

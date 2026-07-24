@@ -6,13 +6,16 @@ def control(sensor_data, mission, config):
     accel = 0.4
     brake = 0.0
 
-    command = {
+    if mission == "STOP":
+        accel = 0.0
+        brake = 1.0
+        target_speed = 0.0
 
+    command = {
         "steer": steer,
         "target_speed": target_speed,
         "accel": accel,
         "brake": brake
-
     }
 
     return command

@@ -25,8 +25,12 @@ for i in range(100):
     # Waypoint까지 거리 계산
     distance = calculate_distance(sensor_data, waypoint)
 
+    # 정지선 호출
+    binary_image = ...
+    stop_line_detected = False
+
     # 현재 미션 결정
-    mission = mission_planning(sensor_data)
+    mission = mission_planning(sensor_data, stop_line_detected)
 
     # 제어 명령 생성
     command = control(sensor_data, mission, config)
@@ -39,7 +43,8 @@ for i in range(100):
         i,
         sensor_data,
         command,
-        mission
+        mission,
+        stop_line_detected
     )
 
     # 화면 출력
