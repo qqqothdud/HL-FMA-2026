@@ -19,6 +19,9 @@ for i in range(100):
     # 센서 데이터 읽기
     sensor_data = get_sensor_data()
 
+    # Camera Frame 경로
+    image = sensor_data["camera"]["front"]
+
     # Waypoint까지 거리 계산
     distance = calculate_distance(sensor_data, waypoint)
 
