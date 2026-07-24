@@ -24,16 +24,17 @@ for i in range(100):
     # 센서 데이터 읽기
     sensor_data = get_sensor_data()
 
-    # Camera Frame 경로
+    # Camera Frame
     image = sensor_data["camera"]["front"]
 
     # Waypoint까지 거리 계산
     distance = calculate_distance(sensor_data, waypoint)
 
-    # 정지선 호출
-    binary_image = ...
+    # OpenCV 구현 전
+    binary_image = None
+
     lane_center = detect_lane(binary_image)
-    stop_line_detected = False
+    stop_line_detected = detect_stop_line(binary_image)
 
     # 현재 미션 결정
     mission_state = mission_planning(
