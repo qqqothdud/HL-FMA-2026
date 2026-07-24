@@ -6,10 +6,8 @@ from planning.geometry import calculate_distance
 from simulator.simulator_interface import (
     get_sensor_data,
     send_command)
-from perception.lane_detector import (
-    detect_lane,
-    detect_stop_line)
 from logger.image_logger import save_failure_image
+from perception.perception import run_perception
 
 config = load_config()
 
@@ -31,15 +29,11 @@ for i in range(100):
     # Waypoint까지 거리 계산
     distance = calculate_distance(sensor_data, waypoint)
 
-    # OpenCV 구현 전
-    binary_image = None
-
-    lane_center = detect_lane(binary_image)
+    # Perception
+    lane_center, stop_line_detected = run_perception(sensor_data)
 
     if lane_center is None:
         save_failure_image(image, "lane_failure", i)
-
-    stop_line_detected = detect_stop_line(binary_image)
 
     # TODO
     # False Positive / False Negative 발생 시
