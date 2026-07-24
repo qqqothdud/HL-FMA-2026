@@ -53,7 +53,7 @@ for i in range(100):
         i,
         sensor_data,
         command,
-        mission,
+        mission_state,
         stop_line_detected
     )
 
@@ -73,7 +73,7 @@ for i in range(100):
     print(f"distance : {distance:.2f} m")
 
     print("\n[Mission]")
-    print(mission)
+    print(mission_state)
 
     print("\n[Command]")
     print(f"steer        : {command['steer']:.3f}")

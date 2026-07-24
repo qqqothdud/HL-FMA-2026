@@ -1,4 +1,4 @@
-def control(sensor_data, mission, config):
+def control(sensor_data, mission_state, config):
 
     target_speed = config["vehicle"]["target_speed"]
 
