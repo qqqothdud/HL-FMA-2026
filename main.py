@@ -60,6 +60,7 @@ for i in range(100):
         sensor_data,
         command,
         mission_state,
+        lane_center,
         stop_line_detected
     )
 
